@@ -1,0 +1,11 @@
+newmtl Octagon
+Ka 1.000000 1.000000 1.000000
+Kd 1.000000 1.000000 1.000000
+Ks 0.000000 0.000000 0.000000
+Ns 92.156863
+Ni 1.000000
+d 1.000000
+illum 2
+map_Kd octagon_diffuse.jpg
+map_Bump octagon_normal.jpg
+map_Ks octagon_specular.jpg
