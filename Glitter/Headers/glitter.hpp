@@ -19,13 +19,14 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
-// Additional Headers
-#include <shader_h.h>
-#include <camera.h>
-
 // Reference: https://github.com/nothings/stb/blob/master/stb_image.h#L4
 // To use stb_image, add this in *one* C++ source file.
 #include <stb_image.h>
+
+// Additional Headers
+#include <shader.hpp>
+#include <camera.hpp>
+#include <model.hpp>
 
 // Define Some Constants
 const int mWidth = 1500;

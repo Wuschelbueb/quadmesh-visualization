@@ -26,8 +26,8 @@ uniform Material material;
 uniform Light light;
 
 // texture samplers
-uniform sampler2D texture1;
-uniform sampler2D texture2;
+uniform sampler2D texture_diffuse1;
+uniform sampler2D texture_diffuse2;
 
 // // Coordinates to start the repetition from
 uniform float center_u;
@@ -76,9 +76,9 @@ void main()
     // FragColor = vec4(result, 1.0);
 
     // Do texture lookup based on the vertices texture coordinates
-    vec4 bg_color = texture(texture1, TexCoord);
+    vec4 bg_color = texture(texture_diffuse1, TexCoord);
     vec3 tempLighting = (ambient + diffuse + specular);
-    vec4 quad_texture = texture(texture2, offset);
+    vec4 quad_texture = texture(texture_diffuse2, offset);
     vec4 bgColorEnd = vec4(tempLighting * objectColor, 1.0) * bg_color;
     vec4 quadTexEnd = vec4(tempLighting, 1.0) * quad_texture;
 	if (all(lessThan(abs(offset), bounds))) {
