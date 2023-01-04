@@ -1,5 +1,5 @@
-#ifndef MESH_H
-#define MESH_H
+#ifndef MESH
+#define MESH
 
 #include <glad/glad.h> // holds all OpenGL type declarations
 
@@ -79,6 +79,10 @@ public:
             else if(name == "texture_height")
                 number = std::to_string(heightNr++); // transfer unsigned int to string
 
+            // either set it manually like so:
+            // glUniform1i(glGetUniformLocation(ourShader.ID, "texture1"), 0);
+            // or set it via the texture class
+            // ourShader.setInt("texture2", 1)
             // now set the sampler to the correct texture unit
             glUniform1i(glGetUniformLocation(shader.ID, (name + number).c_str()), i);
             // and finally bind the texture

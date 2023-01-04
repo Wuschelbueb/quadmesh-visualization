@@ -1,5 +1,5 @@
-#ifndef CAMERA_H
-#define CAMERA_H
+#ifndef CAMERA
+#define CAMERA
 
 #include <glad/glad.h>
 #include <glm/glm.hpp>
