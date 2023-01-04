@@ -1,7 +1,6 @@
 // Preprocessor Directives
-#ifndef GLITTER
-#define GLITTER
-#pragma once
+#ifndef GLITTER_HPP
+#define GLITTER_HPP
 
 // System Headers
 #include <glad/glad.h>

@@ -1,8 +1,7 @@
-#ifndef MODEL
-#define MODEL
+#ifndef MODEL_HPP
+#define MODEL_HPP
 
 #include <glad/glad.h>
-
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <assimp/Importer.hpp>
@@ -173,14 +172,14 @@ private:
     // void addTexture(std::string const &path, std::vector<Texture> &textures) {
     void addTexture(std::vector<Texture> &textures) {
         Texture bg_texture, quadTexture;
-        bg_texture.id = TextureFromFile("../white_pixel.png",this->directory);
+        bg_texture.id = TextureFromFile("./white_pixel.png",this->directory);
         bg_texture.type = "texture_diffuse";
-        bg_texture.path = "../white_pixel.png";
+        bg_texture.path = "./white_pixel.png";
         textures.push_back(bg_texture);
 
-        quadTexture.id = TextureFromFile("../quadTexture.png",this->directory);
+        quadTexture.id = TextureFromFile("./quadTexture.png",this->directory);
         quadTexture.type = "texture_diffuse";
-        quadTexture.path = "../luigi.png";
+        quadTexture.path = "./luigi.png";
         textures.push_back(quadTexture);
     }
 
