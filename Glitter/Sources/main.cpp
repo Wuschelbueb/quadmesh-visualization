@@ -48,29 +48,29 @@ int main(int argc, char *argv[])
 
     fprintf(stderr, "OpenGL %s\n", glGetString(GL_VERSION));
 
-    // Shader ourShader("shader.vs", "shader.fs");
     // this path has to be like this because the shader class searches from the build/glitter folder for files
-    Shader lightingShader("../../Glitter/Shaders/shader.vs", "../../Glitter/Shaders/shader.fs");
-    Shader lightCubeShader("../../Glitter/Shaders/light_cube.vs", "../../Glitter/Shaders/light_cube.fs");
+    Shader ourShader("../../Glitter/Shaders/shader.vs", "../../Glitter/Shaders/shader.fs");
 
     // load models
-    Model ourModel("../../Glitter/Resources/octagon/octagon.obj");
+    Model ourModel("../../Glitter/Resources/cube/cube.obj");
+
 
     // shader configuration
-    lightingShader.use();
+    ourShader.use();
+
     // how many elements of quad textures are repeated
-    lightingShader.setFloat("scale_u", 4.f);
-    lightingShader.setFloat("scale_v", 4.f);
+    ourShader.setFloat("scale_u", 8.f);
+    ourShader.setFloat("scale_v", 8.f);
 
     // Center refers to the uv coordinates of vertices
-    lightingShader.setFloat("center_u", 0.f);
-    lightingShader.setFloat("center_v", 1.f);
+    ourShader.setFloat("center_u", 0.5f);
+    ourShader.setFloat("center_v", 0.5f);
     // how many elements of quad texture have to be seen
-    lightingShader.setInt("elements_u", 4.f);
-    lightingShader.setInt("elements_v", 4.f);
+    ourShader.setInt("elements_u", 4.f);
+    ourShader.setInt("elements_v", 4.f);
 
-    lightingShader.setFloat("u_angle", 0.0f);
-    lightingShader.setVec3("objectColor", 1.0f, 0.9f, 0.31f);
+    ourShader.setFloat("u_angle", 0.0f);
+    ourShader.setVec3("objectColor", 0.5f, 0.5f, 0.5f);
 
     // Rendering Loop
     while (glfwWindowShouldClose(mWindow) == false)
@@ -89,21 +89,18 @@ int main(int argc, char *argv[])
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // also clear the depth buffer now!
 
         // be sure to activate shader when setting uniforms/drawing objects
-        lightingShader.use();
-        lightingShader.setVec3("viewPos", camera.Position);
+        ourShader.use();
+        ourShader.setVec3("viewPos", camera.Position);
         // light properties
-        lightingShader.setVec3("light.direction", -0.2f, -1.0f, -0.3f);
-        lightingShader.setVec3("light.ambient", 1.0f, 1.0f, 1.0f);
-        lightingShader.setVec3("light.diffuse", 0.5f, 0.5f, 0.5f);
-        lightingShader.setVec3("light.specular", 1.0f, 1.0f, 1.0f);
+        ourShader.setVec3("light.direction", -0.2f, -1.0f, -0.3f);
+        ourShader.setVec3("light.ambient", 1.0f, 1.0f, 1.0f);
+        ourShader.setVec3("light.diffuse", 0.5f, 0.5f, 0.5f);
+        ourShader.setVec3("light.specular", 1.0f, 1.0f, 1.0f);
         // material properties
-        lightingShader.setFloat("material.shininess", 32.0f);
+        ourShader.setFloat("material.shininess", 32.0f);
 
         // create transformations
         glm::mat4 model = glm::mat4(1.0f);
-        // model = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.0f)); // translate it down so it's at the center of the scene
-        // model = glm::scale(model, glm::vec3(1.0f, 1.0f, 1.0f));	// it's a bit too big for our scene, so scale it down
-        model = glm::rotate(model, (float)glfwGetTime()/4, glm::vec3(0.5f, 1.0f, 0.0f));
         
         // pass projection matrix to shader (note that in this case it could change every frame)
         glm::mat4 projection = glm::perspective(glm::radians(camera.Zoom), 
@@ -111,17 +108,16 @@ int main(int argc, char *argv[])
         // camera/view transformation
         glm::mat4 view = camera.GetViewMatrix();
 
-        unsigned int modelLoc = glGetUniformLocation(lightingShader.ID, "model");
-        unsigned int viewLoc = glGetUniformLocation(lightingShader.ID, "view");
+        unsigned int modelLoc = glGetUniformLocation(ourShader.ID, "model");
+        unsigned int viewLoc = glGetUniformLocation(ourShader.ID, "view");
         // pass them to the shaders (3 different ways)
         glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
         glUniformMatrix4fv(viewLoc, 1, GL_FALSE, &view[0][0]);
 
-        lightingShader.setMat4("projection", projection);        
-        lightingShader.setMat4("view", view);
-        lightingShader.setMat4("model", model);
-        ourModel.Draw(lightingShader);
-        // ourModel.Draw(lightCubeShader);
+        ourShader.setMat4("projection", projection);        
+        ourShader.setMat4("view", view);
+        ourShader.setMat4("model", model);
+        ourModel.Draw(ourShader);
 
         // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
         // -------------------------------------------------------------------------------
