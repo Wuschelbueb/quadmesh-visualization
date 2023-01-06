@@ -1,15 +1,25 @@
 # square.obj
 o square
 
+
 # Vertices
 # 1 a
 v 0.0 0.0 0.0 
 # 4 d
-v 1.0 0.0 0.0  
+v 2.0 0.0 0.0  
 # 5 e
-v 0.0 1.0 0.0 
-# 8 h
-v 1.0 1.0 0.0  
+v 0.0 2.0 0.0 
+8 h
+v 2.0 2.0 0.0  
+# # Vertices
+# # 1 a
+# v -1.0 -1.0 0.0 
+# # 4 d
+# v 1.0 -1.0 0.0  
+# # 5 e
+# v -1.0 1.0 0.0 
+# # 8 h
+# v 1.0 1.0 0.0  
 
 # Normal vectors
 # One for each face. Shared by all vertices in that face.
