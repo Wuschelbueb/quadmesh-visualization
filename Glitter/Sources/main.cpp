@@ -52,7 +52,10 @@ int main(int argc, char *argv[])
     Shader ourShader("../../Glitter/Shaders/shader.vs", "../../Glitter/Shaders/shader.fs");
 
     // load models
-    Model ourModel("../../Glitter/Resources/square/square.obj");
+    Model ourModel("../../Glitter/Resources/cube/cube.obj");
+    glm::vec3 origin = ourModel.GetObjCenter();
+    glm::vec3 cameraStartPosition = origin + glm::vec3(0.0f, 0.0f, 4.0f);
+    camera.Position = (cameraStartPosition);
 
     // shader configuration
     ourShader.use();
@@ -99,7 +102,6 @@ int main(int argc, char *argv[])
         ourShader.setFloat("material.shininess", 32.0f);
         // rotation and translation of object
         glm::mat4 model = glm::mat4(1.0f);
-        glm::vec3 origin = glm::vec3(1.0f, 1.0f, 0.0f);
         glm::mat4 translation1 = glm::translate(glm::mat4(1.0f), -origin);
         glm::mat4 pitchRot = glm::rotate(glm::mat4(1.0f), glm::radians(pitch), glm::vec3(1.0f, 0.0f, 0.0f));
         glm::mat4 yawRot = glm::rotate(glm::mat4(1.0f), glm::radians(yaw), glm::vec3(0.0f, 1.0f, 0.0f));
