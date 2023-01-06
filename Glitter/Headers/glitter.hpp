@@ -33,11 +33,6 @@ const int mHeight = 1500;
 
 // camera
 Camera camera(glm::vec3(0.0f, 0.0f, 3.0f));
-float lastX = mWidth / 2.0f;
-float lastY = mHeight / 2.0f;
-bool firstMouse = true;
-
-// timing
 float deltaTime = 0.0f; // time between current frame and last frame
 float lastFrame = 0.0f;
 
