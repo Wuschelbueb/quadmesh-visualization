@@ -35,6 +35,11 @@ public:
         loadModel(path);
     }
 
+    glm::vec3 GetObjCenter()
+    {
+        return objectCenter;
+    }
+
     // draws the model, and thus all its meshes
     void Draw(Shader &shader)
     {
@@ -43,6 +48,8 @@ public:
     }
 
 private:
+    // used to calculate center
+    glm::vec3 objectCenter = glm::vec3(0.0f, 0.0f, 0.0f);
     // loads a model with supported ASSIMP extensions from file and stores the resulting meshes in the meshes vector.
     void loadModel(std::string const &path)
     {
@@ -97,6 +104,7 @@ private:
             vector.y = mesh->mVertices[i].y;
             vector.z = mesh->mVertices[i].z;
             vertex.Position = vector;
+            objectCenter += vector;
             // normals
             if (mesh->HasNormals())
             {
@@ -130,6 +138,7 @@ private:
 
             vertices.push_back(vertex);
         }
+        objectCenter /= mesh->mNumVertices;
         // now wak through each of the mesh's faces (a face is a mesh its triangle) and retrieve the corresponding vertex indices.
         for (unsigned int i = 0; i < mesh->mNumFaces; i++)
         {
@@ -161,7 +170,7 @@ private:
         textures.insert(textures.end(), heightMaps.begin(), heightMaps.end());
         if (textures.empty())
         {
-            addTexture(textures);           
+            addTexture(textures);
         }
 
         // return a mesh object created from the extracted mesh data
@@ -170,16 +179,17 @@ private:
 
     // adds quad texture if no material was selected
     // void addTexture(std::string const &path, std::vector<Texture> &textures) {
-    void addTexture(std::vector<Texture> &textures) {
+    void addTexture(std::vector<Texture> &textures)
+    {
         Texture bg_texture, quadTexture;
-        bg_texture.id = TextureFromFile("./white_pixel.png",this->directory);
+        bg_texture.id = TextureFromFile("../white_pixel.png", this->directory);
         bg_texture.type = "texture_diffuse";
-        bg_texture.path = "./white_pixel.png";
+        bg_texture.path = "../white_pixel.png";
         textures.push_back(bg_texture);
 
-        quadTexture.id = TextureFromFile("./quadTexture.png",this->directory);
+        quadTexture.id = TextureFromFile("../luigi.png", this->directory);
         quadTexture.type = "texture_diffuse";
-        quadTexture.path = "./luigi.png";
+        quadTexture.path = "../luigi.png";
         textures.push_back(quadTexture);
     }
 
