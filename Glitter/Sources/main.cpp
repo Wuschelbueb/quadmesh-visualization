@@ -31,8 +31,8 @@ int main(int argc, char *argv[])
     glfwMakeContextCurrent(mWindow);
     glfwSetFramebufferSizeCallback(mWindow, framebuffer_size_callback);
     glfwSetCursorPosCallback(mWindow, mouse_callback);
+    glfwSetMouseButtonCallback(mWindow, mouse_button);
     glfwSetScrollCallback(mWindow, scroll_callback);
-    glfwSetInputMode(mWindow, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
     gladLoadGL();
 
     // glad: load all OpenGL function pointers
@@ -52,22 +52,21 @@ int main(int argc, char *argv[])
     Shader ourShader("../../Glitter/Shaders/shader.vs", "../../Glitter/Shaders/shader.fs");
 
     // load models
-    Model ourModel("../../Glitter/Resources/cube/cube.obj");
-
+    Model ourModel("../../Glitter/Resources/square/square.obj");
 
     // shader configuration
     ourShader.use();
 
     // how many elements of quad textures are repeated
-    ourShader.setFloat("scale_u", 8.f);
-    ourShader.setFloat("scale_v", 8.f);
+    ourShader.setFloat("scale_u", 4.f);
+    ourShader.setFloat("scale_v", 4.f);
 
     // Center refers to the uv coordinates of vertices
-    ourShader.setFloat("center_u", 0.5f);
-    ourShader.setFloat("center_v", 0.5f);
+    ourShader.setFloat("center_u", 0.714975f);
+    ourShader.setFloat("center_v", 0.564212f);
     // how many elements of quad texture have to be seen
-    ourShader.setInt("elements_u", 4.f);
-    ourShader.setInt("elements_v", 4.f);
+    ourShader.setInt("elements_u", 40.f);
+    ourShader.setInt("elements_v", 40.f);
 
     ourShader.setFloat("u_angle", 0.0f);
     ourShader.setVec3("objectColor", 0.5f, 0.5f, 0.5f);
@@ -98,13 +97,19 @@ int main(int argc, char *argv[])
         ourShader.setVec3("light.specular", 1.0f, 1.0f, 1.0f);
         // material properties
         ourShader.setFloat("material.shininess", 32.0f);
-
-        // create transformations
+        // rotation and translation of object
         glm::mat4 model = glm::mat4(1.0f);
-        
+        glm::vec3 origin = glm::vec3(1.0f, 1.0f, 0.0f);
+        glm::mat4 translation1 = glm::translate(glm::mat4(1.0f), -origin);
+        glm::mat4 pitchRot = glm::rotate(glm::mat4(1.0f), glm::radians(pitch), glm::vec3(1.0f, 0.0f, 0.0f));
+        glm::mat4 yawRot = glm::rotate(glm::mat4(1.0f), glm::radians(yaw), glm::vec3(0.0f, 1.0f, 0.0f));
+        glm::mat4 rotation = pitchRot * yawRot;
+        glm::mat4 translation2 = glm::translate(glm::mat4(1.0f), origin);
+        // dont change order, this matters
+        model = translation2 * rotation * translation1 * model;
+
         // pass projection matrix to shader (note that in this case it could change every frame)
-        glm::mat4 projection = glm::perspective(glm::radians(camera.Zoom), 
-        (float)mWidth / (float)mHeight, 0.1f, 100.0f);
+        glm::mat4 projection = glm::perspective(glm::radians(camera.Zoom), (float)mWidth / (float)mHeight, 0.1f, 100.0f);
         // camera/view transformation
         glm::mat4 view = camera.GetViewMatrix();
 
@@ -114,13 +119,13 @@ int main(int argc, char *argv[])
         glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
         glUniformMatrix4fv(viewLoc, 1, GL_FALSE, &view[0][0]);
 
-        ourShader.setMat4("projection", projection);        
+        ourShader.setMat4("projection", projection);
         ourShader.setMat4("view", view);
         ourShader.setMat4("model", model);
         ourModel.Draw(ourShader);
 
         // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
-        // -------------------------------------------------------------------------------
+        //
         glfwSwapBuffers(mWindow);
         glfwPollEvents();
     }
@@ -154,32 +159,52 @@ void framebuffer_size_callback(GLFWwindow *window, int width, int height)
     glViewport(0, 0, width, height);
 }
 
-// glfw: whenever the mouse moves, this callback is called
-// -------------------------------------------------------
-void mouse_callback(GLFWwindow *window, double xposIn, double yposIn)
-{
-    float xpos = static_cast<float>(xposIn);
-    float ypos = static_cast<float>(yposIn);
-
-    if (firstMouse)
-    {
-        lastX = xpos;
-        lastY = ypos;
-        firstMouse = false;
-    }
-
-    float xoffset = xpos - lastX;
-    float yoffset = lastY - ypos; // reversed since y-coordinates go from bottom to top
-
-    lastX = xpos;
-    lastY = ypos;
-
-    camera.ProcessMouseMovement(xoffset, yoffset);
-}
-
 // glfw: whenever the mouse scroll wheel scrolls, this callback is called
 // ----------------------------------------------------------------------
 void scroll_callback(GLFWwindow *window, double xoffset, double yoffset)
 {
     camera.ProcessMouseScroll(static_cast<float>(yoffset));
+}
+
+void mouse_callback(GLFWwindow *window, double mouseX, double mouseY)
+{
+    // Calculate the change in mouse position since the last frame
+    float deltaX = mouseX - lastMouseX;
+    float deltaY = lastMouseY - mouseY;
+    const float sensitivity = 0.1f;
+
+    // Update the mouse position for the next frame
+    lastMouseX = mouseX;
+    lastMouseY = mouseY;
+
+    deltaX *= sensitivity;
+    deltaY *= sensitivity;
+
+    // Check if the left mouse button is pressed
+    if (leftButtonPressed)
+    {
+        // Update the pitch and yaw angles
+        yaw += deltaX;
+        pitch += deltaY;
+
+        if (pitch > 89.0f)
+            pitch = 89.0f;
+        if (pitch < -89.0f)
+            pitch = -89.0f;
+    }
+}
+
+void mouse_button(GLFWwindow *window, int button, int action, int mods)
+{
+    // Check if the left mouse button was pressed
+    if (button == GLFW_MOUSE_BUTTON_LEFT)
+    {
+        // Update the left button pressed flag
+        if (action == GLFW_PRESS)
+        {
+            leftButtonPressed = true;
+        }
+        else if (action == GLFW_RELEASE)
+            leftButtonPressed = false;
+    }
 }

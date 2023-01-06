@@ -38,14 +38,21 @@ float lastY = mHeight / 2.0f;
 bool firstMouse = true;
 
 // timing
-float deltaTime = 0.0f;	// time between current frame and last frame
+float deltaTime = 0.0f; // time between current frame and last frame
 float lastFrame = 0.0f;
 
-void processInput(GLFWwindow *window);
-void framebuffer_size_callback(GLFWwindow* window, int width, int height);
-void mouse_callback(GLFWwindow* window, double xpos, double ypos);
-void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
-unsigned int loadTexture(const char *path);
+// mouse movement
+bool leftButtonPressed = false;
+int lastMouseX = 0;
+int lastMouseY = 0;
+float pitch = 0.f;
+float yaw = 0.f;
 
+void processInput(GLFWwindow *window);
+void framebuffer_size_callback(GLFWwindow *window, int width, int height);
+void mouse_callback(GLFWwindow *window, double mouseX, double mouseY);
+void mouse_button(GLFWwindow *window, int button, int action, int mods);
+void scroll_callback(GLFWwindow *window, double xoffset, double yoffset);
+unsigned int loadTexture(const char *path);
 
 #endif //~ Glitter Header
