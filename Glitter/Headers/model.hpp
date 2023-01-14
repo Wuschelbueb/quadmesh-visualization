@@ -44,15 +44,26 @@ public:
     void Draw(Shader &shader)
     {
         for (unsigned int i = 0; i < meshes.size(); i++)
+        {
             meshes[i].Draw(shader);
+        }
+        float center_u = glGetUniformLocation(shader.ID, "center_u");
+        glUniform1f(center_u, centerU);
+        float center_v = glGetUniformLocation(shader.ID, "center_v");
+        glUniform1f(center_v, centerV);
+        int nb_quads = glGetUniformLocation(shader.ID, "elements_u");
+        glUniform1i(nb_quads, nbQuads);
     }
 
 private:
     // used to calculate center
     glm::vec3 objectCenter = glm::vec3(0.0f, 0.0f, 0.0f);
+    double centerU = 0, centerV = 0;
+    int nbQuads = 0;
     // loads a model with supported ASSIMP extensions from file and stores the resulting meshes in the meshes vector.
     void loadModel(std::string const &path)
     {
+        readFile(path);
         // read file via ASSIMP
         Assimp::Importer importer;
         const aiScene *scene = importer.ReadFile(path, aiProcess_Triangulate | aiProcess_GenSmoothNormals | aiProcess_FlipUVs | aiProcess_CalcTangentSpace);
@@ -67,6 +78,35 @@ private:
 
         // process ASSIMP's root node recursively
         processNode(scene->mRootNode, scene);
+    }
+
+    void readFile(std::string const &path)
+    {
+        std::string line;
+        std::ifstream file(path);
+
+        if (file.is_open())
+        {
+            while (getline(file, line))
+            {
+                if (line.find("# TexCoords: ") == 0)
+                {
+                    std::stringstream ss(line.substr(12));
+                    ss >> centerU >> centerV;
+                    centerV = 1.0 - centerV;
+                }
+                if (line.find("# nbQuads: ") == 0)
+                {
+                    std::stringstream ss(line.substr(10));
+                    ss >> nbQuads;
+                }
+            }
+            file.close();
+        }
+        else
+        {
+            std::cout << "Unable to open file" << std::endl;
+        }
     }
 
     // processes a node in a recursive fashion. Processes each individual mesh located at the node and repeats this process on its children nodes (if any).
@@ -187,9 +227,9 @@ private:
         bg_texture.path = "../white_pixel.png";
         textures.push_back(bg_texture);
 
-        quadTexture.id = TextureFromFile("../luigi.png", this->directory);
+        quadTexture.id = TextureFromFile("../white_pixel.png", this->directory);
         quadTexture.type = "texture_diffuse";
-        quadTexture.path = "../luigi.png";
+        quadTexture.path = "../white_pixel.png";
         textures.push_back(quadTexture);
     }
 
