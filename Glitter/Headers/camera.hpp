@@ -8,6 +8,8 @@
 
 // Defines several possible options for camera movement. Used as abstraction to stay away from window-system specific input methods
 enum Camera_Movement {
+    UP,
+    DOWN,
     FORWARD,
     BACKWARD,
     LEFT,
@@ -75,6 +77,10 @@ public:
             Position -= Front * velocity;
         if (direction == LEFT)
             Position -= Right * velocity;
+        if (direction == UP)
+            Position += Up * velocity;
+        if (direction == DOWN)
+            Position -= Up * velocity;
         if (direction == RIGHT)
             Position += Right * velocity;
     }
