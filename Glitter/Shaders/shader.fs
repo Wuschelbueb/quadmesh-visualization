@@ -48,12 +48,12 @@ void main()
     vec2 scale = vec2(scale_u, scale_v);
     float sin_factor = sin(u_angle);
     float cos_factor = cos(u_angle);
-    vec2 bounds = vec2(float(elements_u/2), float(elements_v/2));
+    vec2 bounds = vec2(float(elements_u/2), float(elements_u/2));
 
     //  Compute absolute offset from center
 	vec2 offset = scale * (TexCoord - center);
-	offset = (offset - TexCoord) * mat2(cos_factor, sin_factor, -sin_factor, cos_factor);
-	offset += TexCoord;
+	// offset = (offset - TexCoord) + TexCoord;
+	// offset += TexCoord;
 
     // ambient
     vec3 ambient = light.ambient * light.diffuse; // * texture(material.diffuse, TexCoord).rgb; 
@@ -72,14 +72,92 @@ void main()
     vec3 specular = light.specular * spec; // * texture(material.specular, TexCoord).rgb;
 
     // Do texture lookup based on the vertices texture coordinates
+    // color of U coord
+    float texCoordX = TexCoord.x;
+    float texCoordY = TexCoord.y;
+    float tempX = texCoordX - int(texCoordX);
+    float tempY = texCoordY - int(texCoordY);
+    int fracPartX = int(tempX*10);
+    int fracPartY = int(tempY*10);
+    vec3 color = vec3(0.0, 0.0, 0.0);
+    switch (fracPartX) {
+        case 0:
+            color += vec3(0.0, 1.0, 0.0);
+            break;
+        case 1:
+            color += vec3(0.0, 0.1, 0.0);
+            break;
+        case 2:
+            color += vec3(0.0, 0.2, 0.0);
+            break;
+        case 3:
+            color += vec3(0.0, 0.3, 0.0);
+            break;
+        case 4:
+            color += vec3(0.0, 0.4, 0.0);
+            break;
+        case 5:
+            color += vec3(0.0, 0.5, 0.0);
+            break;
+        case 6:
+            color += vec3(0.0, 0.6, 0.0);
+            break;
+        case 7:
+            color += vec3(0.0, 0.7, 0.0);
+            break;
+        case 8:
+            color += vec3(0.0, 0.8, 0.0);
+            break;
+        case 9:
+            color += vec3(0.0, 0.9, 0.0);
+            break;
+        default:
+            color += vec3(0.0, 0.0, 0.0);
+    }
+    // frag color for v coord
+    switch (fracPartY) {
+        case 0:
+            color += vec3(1.0, 0.0, 0.0);
+            break;
+        case 1:
+            color += vec3(0.1, 0.0, 0.0);
+            break;
+        case 2:
+            color += vec3(0.2, 0.0, 0.0);
+            break;
+        case 3:
+            color += vec3(0.3, 0.0, 0.0);
+            break;
+        case 4:
+            color += vec3(0.4, 0.0, 0.0);
+            break;
+        case 5:
+            color += vec3(0.5, 0.0, 0.0);
+            break;
+        case 6:
+            color += vec3(0.6, 0.0, 0.0);
+            break;
+        case 7:
+            color += vec3(0.7, 0.0, 0.0);
+            break;
+        case 8:
+            color += vec3(0.8, 0.0, 0.0);
+            break;
+        case 9:
+            color += vec3(0.9, 0.0, 0.0);
+            break;
+        default:
+            color += vec3(0.0, 0.0, 0.0);
+    }
+
     vec4 bg_color = texture(texture_diffuse1, TexCoord);
     vec3 tempLighting = (ambient + diffuse + specular);
     vec4 quad_texture = texture(texture_diffuse2, offset);
     vec4 bgColorEnd = vec4(tempLighting * objectColor, 1.0) * bg_color;
-    vec4 quadTexEnd = vec4(tempLighting, 1.0) * quad_texture;
+    vec4 quadTexEnd = vec4(tempLighting*color, 1.0) * quad_texture;
 	if (all(lessThan(abs(offset), bounds))) {
-	    FragColor = mix(bgColorEnd,quadTexEnd, 0.9);
-	} else {
-	    FragColor = bgColorEnd;
-	}
+	    FragColor = mix(bgColorEnd,quadTexEnd, 1.0);
+	}else {
+        FragColor = bgColorEnd;
+    }
 }
