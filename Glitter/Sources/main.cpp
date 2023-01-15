@@ -52,7 +52,7 @@ int main(int argc, char *argv[])
     Shader ourShader("../../Glitter/Shaders/shader.vs", "../../Glitter/Shaders/shader.fs");
 
     // load models
-    Model ourModel("../../Glitter/Resources/cube/cube.obj");
+    Model ourModel("../../Glitter/Resources/square/object.obj");
     glm::vec3 origin = ourModel.GetObjCenter();
     glm::vec3 cameraStartPosition = origin + glm::vec3(0.0f, 0.0f, 4.0f);
     camera.Position = (cameraStartPosition);
@@ -61,17 +61,8 @@ int main(int argc, char *argv[])
     ourShader.use();
 
     // how many elements of quad textures are repeated
-    ourShader.setFloat("scale_u", 4.f);
-    ourShader.setFloat("scale_v", 4.f);
-
-    // Center refers to the uv coordinates of vertices
-    ourShader.setFloat("center_u", 0.714975f);
-    ourShader.setFloat("center_v", 0.564212f);
-    // how many elements of quad texture have to be seen
-    ourShader.setInt("elements_u", 40.f);
-    ourShader.setInt("elements_v", 40.f);
-
-    ourShader.setFloat("u_angle", 0.0f);
+    ourShader.setFloat("scale_u", 1.f);
+    ourShader.setFloat("scale_v", 1.f);
     ourShader.setVec3("objectColor", 0.5f, 0.5f, 0.5f);
 
     // Rendering Loop
@@ -142,10 +133,14 @@ void processInput(GLFWwindow *window)
 {
     if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
         glfwSetWindowShouldClose(window, true);
+    if (glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS)
+        camera.ProcessKeyboard(FORWARD, deltaTime*2);
     if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
-        camera.ProcessKeyboard(FORWARD, deltaTime);
+        camera.ProcessKeyboard(UP, deltaTime);
     if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
-        camera.ProcessKeyboard(BACKWARD, deltaTime);
+        camera.ProcessKeyboard(DOWN, deltaTime);
+    if (glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS)
+        camera.ProcessKeyboard(BACKWARD, deltaTime*2);
     if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
         camera.ProcessKeyboard(LEFT, deltaTime);
     if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)

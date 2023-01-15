@@ -52,8 +52,6 @@ void main()
 
     //  Compute absolute offset from center
 	vec2 offset = scale * (TexCoord - center);
-	// offset = (offset - TexCoord) + TexCoord;
-	// offset += TexCoord;
 
     // ambient
     vec3 ambient = light.ambient * light.diffuse; // * texture(material.diffuse, TexCoord).rgb; 
